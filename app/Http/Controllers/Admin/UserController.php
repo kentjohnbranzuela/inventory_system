@@ -6,9 +6,12 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB; // ✅ Import DB facade
+
 
 class UserController extends Controller
 {
+ // ✅ Import DB facade
     public function index()
     {
         $users = User::all();
@@ -20,22 +23,15 @@ class UserController extends Controller
         return view('admin.users.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'required|in:admin,user',
-        ]);
+   public function store(Request $request)
+{
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        'role' => $request->role,
+    ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
-        ]);
-
-        return redirect()->route('admin.users')->with('success', 'User created successfully!');
-    }
+    return redirect()->route('admin.users')->with('success', 'User created successfully!');
+}
 }
