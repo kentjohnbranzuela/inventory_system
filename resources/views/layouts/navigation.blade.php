@@ -1,4 +1,5 @@
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -16,7 +17,42 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+               @if(Auth::check() && Auth::user()->role == 'admin')
+    <div class="hidden sm:flex sm:items-center sm:ms-10">
+        <!-- Inventory Dropdown -->
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open" @click.away="open = false"
+                class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium leading-5 text-gray-700 dark:text-gray-300
+                hover:text-gray-900 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 rounded-md">
+                {{ __('Stocks Monitoring') }}
+                <svg class="ml-1 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div x-show="open" class="absolute mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-md z-50" style="display: none;">
+                <a href="{{ route('inventory.index') }}"
+                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 no-underline"
+                    style="text-decoration: none;">
+                    Stocks List
+                </a>
+                <a href="{{ route('inventory.create') }}"
+                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 no-underline"
+                    style="text-decoration: none;">
+                    Add Stocks
+                </a>
+                <a href="{{ route('inventory.reports') }}"
+                    class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 no-underline"
+                    style="text-decoration: none;">
+                    Stocks Reports
+                </a>
             </div>
+        </div>
+    </div>
+@endif
+            </div>
+
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -47,6 +83,11 @@
                                                 this.closest('form').submit();">
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
+                            @if(Auth::check() && Auth::user()->role == 'admin')
+    <x-dropdown-link :href="route('admin.users.create')">
+        {{ __('Create user') }}
+    </x-dropdown-link>
+@endif
                         </form>
                     </x-slot>
                 </x-dropdown>
